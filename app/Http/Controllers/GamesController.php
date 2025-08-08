@@ -18,7 +18,7 @@ class GamesController extends Controller
      */
     public function index()
     {
-        //Step 3. Your code here
+        return view('games.list', ['games' => $this->game_list]);
     }
 
     /**
@@ -27,10 +27,19 @@ class GamesController extends Controller
     public function show(string $id)
     {
         //Step 4.
-        $results = array_filter($this->game_list, function ($game) use ($id) {
-            return $game['id'] != $id;
+        $results = array_filter($this->game_list, function ($game) use ($id) 
+        {
+            return $game['id'] == $id;
         });
-        return view('games.show', ['games' => $results]);
+
+        $game = array_values($results)[0] ?? null;
+
+        if (!$game) 
+        {
+            abort(404, 'Game not found');
+        }
+
+        return view('games.show', ['game' => $game]);
     }
 
     /**
